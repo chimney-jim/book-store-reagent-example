@@ -1,1 +1,42 @@
-Leiningen.gitignore
+
+# Created by https://www.gitignore.io/api/git,linux,clojure,leiningen
+
+### Clojure ###
+pom.xml
+pom.xml.asc
+*.jar
+*.class
+/lib/
+/classes/
+/target/
+/checkouts/
+.lein-deps-sum
+.lein-repl-history
+.lein-plugins/
+.lein-failures
+.nrepl-port
+
+### Git ###
+*.orig
+
+### Leiningen ###
+
+### Linux ###
+*~
+
+# temporary files which can be created if a process still has a handle open of a deleted file
+.fuse_hidden*
+
+# KDE directory preferences
+.directory
+
+# Linux trash folder which might appear on any partition or disk
+.Trash-*
+
+# .nfs files are created when an open file is removed but is still being accessed
+.nfs*
+
+# End of https://www.gitignore.io/api/git,linux,clojure,leiningen
+
+*.log
+resources/public/node_modules/
