@@ -17,7 +17,6 @@
    [:meta {:charset "utf-8"}]
    [:meta {:name "viewport"
            :content "width=device-width, initial-scale=1"}]
-  ;  (include-css (if (env :dev) "/css/site.css" "/css/site.min.css"))
    (include-css (if (env :dev) "node_modules/bootstrap/dist/css/bootstrap.css"
                                "node_modules/bootstrap/dist/css/bootstrap.min.css"))])
 
@@ -25,7 +24,7 @@
   (html5
     (head)
     [:body]
-     mount-target
+    mount-target
      (include-js "/js/app.js")))
 
 

@@ -5,34 +5,56 @@
               [react-example-cljs.home-page :refer [home-page]]
               [react-example-cljs.book-page :refer [book-page]]
               [react-example-cljs.about-page :refer [about-page]]
-              [react-example-cljs.nav-page :refer [nav-page]]))
+              [react-example-cljs.nav-page :refer [nav-page]]
+              [re-frame.core :as rf]))
 
-(def app-state (atom {:page [home-page]
-                      :books [{:title "Dune"}
-                              {:title "Something"}
-                              {:title "something else"}]}))
+(rf/reg-event-db
+  :init-db
+  (fn [_ _]
+    {:current-page [home-page]
+     :books [{:id (gensym "book_")
+              :title "Dune"}
+             {:id (gensym "book_")
+              :title "Something"}
+             {:id (gensym "book_")
+              :title "something else"}]}))
+
+(rf/reg-event-db
+  :set-current-page
+  (fn [db [_ page]]
+    (assoc db :current-page page)))
+
+(rf/reg-sub
+  :current-page
+  (fn [db _]
+    (:current-page db)))
 
 ;; -------------------------
 ;; Routes
 
 (defn current-page []
-  [:div [nav-page]
-    [:main.container (:page @app-state)]])
+  (let [cur-page (rf/subscribe [:current-page])]
+    (fn []
+      [:div
+        [nav-page]
+        [:main.container @cur-page]])))
 
 (secretary/defroute "/" []
-  (swap! app-state assoc-in [:page] [home-page]))
+  (rf/dispatch [:set-current-page [home-page]]))
 
 (secretary/defroute "/about" []
-  (swap! app-state assoc-in [:page] [about-page]))
+  (rf/dispatch [:set-current-page [about-page]]))
 
 (secretary/defroute "/books" []
-  (swap! app-state assoc-in [:page] [book-page app-state]))
+  (rf/dispatch [:set-current-page [book-page]]))
 
 ;; -------------------------
 ;; Initialize app
 
 (defn mount-root []
-  (reagent/render [current-page] (.getElementById js/document "app")))
+  (do
+    (rf/dispatch [:init-db])
+    (reagent/render [current-page] (.getElementById js/document "app"))))
 
 (defn init! []
   (accountant/configure-navigation!

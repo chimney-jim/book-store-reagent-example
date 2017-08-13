@@ -1,16 +1,28 @@
 (ns react-example-cljs.book-page
-  (:require [reagent.core :refer [atom]]))
+  (:require [reagent.core :refer [atom]]
+            [re-frame.core :as rf]))
 
-(defn book-page [app-state]
-  (let [books (:books @app-state)
+(rf/reg-event-db
+  :add-book
+  (fn [db [_ title]]
+    (update db :books conj {:id (gensym "book_")
+                            :title title})))
+
+(rf/reg-sub
+  :books
+  (fn [db _]
+    (:books db)))
+
+(defn book-page []
+  (let [books (rf/subscribe [:books])
         book-input (atom "hello")]
     (fn []
       [:div
-        (str books)
+        (str @books)
         [:div
           [:h3 "Books"]
           [:ul
-            (for [book books]
+            (for [book @books]
               ^{:key book} [:li (:title book)])]]
         [:div
           [:h3 "Book Form"]
@@ -18,8 +30,12 @@
             [:input {:type "text"
                      :name "title"
                      :value @book-input
-                     :on-change #(reset! book-input (-> % .-target .-value))}]
+                     :on-change (fn [el]
+                                  (.preventDefualt el)
+                                  (reset! book-input (-> el .-target .-value)))}]
             [:button
               {:type "submit"
-               :on-click #(swap! app-state assoc-in [:books] (conj books {:title @book-input}))}
+               :on-click (fn [el]
+                            (.preventDefault el)
+                            (rf/dispatch [:add-book @book-input]))}
               "Save"]]]])))
