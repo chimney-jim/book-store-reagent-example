@@ -13,7 +13,7 @@
 (rf/reg-event-db
   ::init-db
   (fn [_ _]
-    { :current-page nil
+    { :current-page [home-page]
       :books nil}))
 
 (rf/reg-event-db
