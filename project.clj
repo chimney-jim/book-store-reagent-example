@@ -18,7 +18,10 @@
                  [secretary "1.2.3"]
                  [venantius/accountant "0.2.0"
                   :exclusions [org.clojure/tools.reader]]
-                 [re-frame "0.9.4"]]
+                 [re-frame "0.9.4"]
+                 [day8.re-frame/http-fx "0.1.4"]
+                 [cljs-ajax "0.6.0"]
+                 [com.lucasbradstreet/cljs-uuid-utils "1.0.2"]]
 
   :npm {:root "resources/public"
         :dependencies [bootstrap "4.0.0-alpha.6"]}
